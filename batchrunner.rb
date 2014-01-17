@@ -2,7 +2,7 @@
 
 # First, process any command-line arguments
 outfile_name = "outfile"
-while ARGV[0] && ARGV[0][0] == "-"
+while ARGV[0] && (ARGV[0][0] == "-" || ARGV[0][0] == 45)
   case ARGV.shift
   when "--outfile", "-o"
     outfile_name = ARGV.shift

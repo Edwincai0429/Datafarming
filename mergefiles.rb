@@ -13,7 +13,7 @@
 
 # First, process any command-line arguments
 no_labels = false
-while ARGV[0] && ARGV[0][0] == "-"
+while ARGV[0] && (ARGV[0][0] == "-" || ARGV[0][0] == 45)
   case ARGV.shift
   when "--no-labels", "-n"
     no_labels = true
