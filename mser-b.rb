@@ -28,7 +28,9 @@ if ARGV.length > 0
   ws = WeightedStats.new
 
   ARGV.each do |fname|
-    data = File.readlines(fname).map {|line| line.strip!.to_f}
+    data = File.readlines(fname)
+    data.shift if data[0] =~ /[A-Za-z]/
+    data.map! {|line| line.chomp.strip.to_f}
     mser_stats = QuickStats.new
     warmup = [(data.length * 0.5).to_i, data.length - 10].min
     index = data.length - 1
