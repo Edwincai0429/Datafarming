@@ -11,7 +11,7 @@ end
 #
 # Note that this may require admin privileges.
 require 'quickstats'
-require 'weightedstats'
+# require 'weightedstats'
 
 def readbatch(data, index, b)
   (data[(index+1-b)..index].inject {|x,sum| sum+=x}) / b  
@@ -25,7 +25,7 @@ if ARGV.length > 0
 
   printf "x-bar,n\n"
 
-  ws = WeightedStats.new
+  # ws = WeightedStats.new
 
   ARGV.each do |fname|
     data = File.readlines(fname)
@@ -49,10 +49,10 @@ if ARGV.length > 0
     end
 
     printf "%f,%d\n", best[1], data.length - best[2]
-    ws.new_obs(best[1], data.length - best[2])
+    # ws.new_obs(best[1], data.length - best[2])
 
   end
-  printf "avg = %f, std err = %f, df = %f\n", ws.avg, ws.std_err, ws.df
+  # printf "avg = %f, std err = %f, df = %f\n", ws.avg, ws.std_err, ws.df
 else
   STDERR.puts
   STDERR.puts " Must supply at least one argument.  Syntax:"
