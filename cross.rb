@@ -33,17 +33,25 @@ class Cross
 end
 
 # The remainder is effectively the "main" for this script
-input_array = []
-ARGV.each do |filename|     # for each file given as a command-line arg...
-  # open the file, read all the lines, and then for each line use
-  # spaces, commas, colons, or semicolons to tokenize, then rejoin
-  # with commas (i.e., standardize on CSV regardless of what the
-  # original token separator was).  Take the resulting line and
-  # append it to input_array
-  input_array << File.open(filename).readlines.collect do |line|
-    line.strip.split(/[\s,:;]+/).join(",")
+if __FILE__ == $0
+  if ARGV.length > 1
+    input_array = []
+    ARGV.each do |filename|     # for each file given as a command-line arg...
+      # open the file, read all the lines, and then for each line use
+      # spaces, commas, colons, or semicolons to tokenize, then rejoin
+      # with commas (i.e., standardize on CSV regardless of what the
+      # original token separator was).  Take the resulting line and
+      # append it to input_array
+      input_array << File.open(filename).readlines.collect do |line|
+        line.strip.split(/[\s,:;]+/).join(",")
+      end
+    end
+
+    c = Cross.new(input_array)
+    c.solution.each {|line| puts line}
+  else
+    STDERR.print "\n\tMust supply command-line arguments consisting of the names\n"
+    STDERR.print "\tof two or more design files.\n\n"
   end
 end
 
-c = Cross.new(input_array)
-c.solution.each {|line| puts line}
