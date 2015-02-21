@@ -8,7 +8,7 @@ while ARGV[0] && (ARGV[0][0] == "-" || ARGV[0][0] == 45)
   when "--print", "-p"
     print = true
   when "--destructive", "-d"
-    destructive = false
+    destructive = true
   else
     STDERR.puts "Unknown argument!"
   end
