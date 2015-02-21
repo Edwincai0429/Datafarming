@@ -1,10 +1,14 @@
 #!/usr/bin/env ruby -w
 
-print = false
+print = false   # default is to run rather than print
+destructive = false   # default is non-destructive for output file
+
 while ARGV[0] && (ARGV[0][0] == "-" || ARGV[0][0] == 45)
   case ARGV.shift
   when "--print", "-p"
     print = true
+  when "--destructive", "-d"
+    destructive = false
   else
     STDERR.puts "Unknown argument!"
   end
@@ -20,7 +24,7 @@ if ARGV.length == 4
   reps = ARGV.shift.to_i
   # Where do the results go?
   output_file_name = ARGV.shift
-  File.delete(output_file_name) if File.exists?(output_file_name)
+  File.delete(output_file_name) if destructive && File.exists?(output_file_name)
 
   reps.times do
     design_pts.each do |design_pt|
@@ -39,7 +43,9 @@ else
   STDERR.puts "\tThe name of the DOE file (scaled, no headers or extra columns)"
   STDERR.puts "\tThe number of times to replicate each design point"
   STDERR.puts "\tThe name of the output file to which results will be sent\n"
-  STDERR.puts "\n  If \"--print\" or \"-p\" is supplied as the first argument"
-  STDERR.puts "  (without the quotes), the constructed commands will be"
-  STDERR.puts "  printed to STDOUT rather than executed\n\n"
+  STDERR.puts "\n  Note: run-time options, if present, must be specified"
+  STDERR.puts "  before the 4 required command-line arguments."
+  STDERR.puts "\n  Options:"
+  STDERR.puts "\n\t--print or -p: print to STDOUT rather than executing"
+  STDERR.puts "\n\t--destructive or -d: delete pre-existing output file\n\n"
 end
