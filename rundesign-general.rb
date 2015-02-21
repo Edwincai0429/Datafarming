@@ -1,5 +1,15 @@
 #!/usr/bin/env ruby -w
 
+print = false
+while ARGV[0] && (ARGV[0][0] == "-" || ARGV[0][0] == 45)
+  case ARGV.shift
+  when "--print", "-p"
+    print = true
+  else
+    STDERR.puts "Unknown argument!"
+  end
+end
+
 if ARGV.length == 4
   # What shall we run today?
   cmd = ARGV.shift
@@ -14,8 +24,13 @@ if ARGV.length == 4
 
   reps.times do
     design_pts.each do |design_pt|
-      result = `#{cmd} #{design_pt} >> #{output_file_name}`
-      STDERR.puts result if result =~ /\S/
+      exe_line = "#{cmd} #{design_pt} >> #{output_file_name}"
+      if print
+        puts exe_line
+      else
+        result = `#{exe_line}`
+        STDERR.puts result if result =~ /\S/
+      end
     end
   end
 else
@@ -23,5 +38,8 @@ else
   STDERR.puts "\tThe command to be run (MUST be in single quotes)"
   STDERR.puts "\tThe name of the DOE file (scaled, no headers or extra columns)"
   STDERR.puts "\tThe number of times to replicate each design point"
-  STDERR.puts "\tThe name of the output file to which results will be sent\n\n"
+  STDERR.puts "\tThe name of the output file to which results will be sent\n"
+  STDERR.puts "\n  If \"--print\" or \"-p\" is supplied as the first argument"
+  STDERR.puts "  (without the quotes), the constructed commands will be"
+  STDERR.puts "  printed to STDOUT rather than executed\n\n"
 end
