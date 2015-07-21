@@ -9,9 +9,9 @@
 # The operation saves each original input file with a suffix of
 # ".orig" and then operates in-place on the specified files.
 
-$-i = ".orig"   # specify backup suffix
+$-i = '.orig'   # specify backup suffix
 
-oldfilename = ""
+oldfilename = ''
 
 ARGF.each do |line|
   if ARGF.filename == oldfilename   # If it's an old file
