@@ -6,8 +6,8 @@
 # because we don't know how many designs there may
 # be in the input set.
 class Cross
-  attr_reader :solution # simultaneously creates the solution
-                        # set and a getter method for it.
+  # create the solution set and a getter method for it.
+  attr_reader :solution
 
   # the Constructor takes an array of arrays, where
   # each sub-array contains a single component design,
@@ -15,25 +15,26 @@ class Cross
   def initialize(array_of_arrays)
     @allfiles = array_of_arrays
     @solution = []
-    recursive_build(0, "")
+    recursive_build(0, '')
   end
 
-  private # the following should never be invoked by end users,
-          # it is only called by the constructor after suitable setup
+  private
 
+  # the following should never be invoked by end users,
+  # it is only called by the constructor after suitable setup
   def recursive_build(index, partial_solution)
     if index < @allfiles.size - 1
       @allfiles[index].each do |line|
-        recursive_build(index + 1, partial_solution + line + ",")
+        recursive_build(index + 1, partial_solution + line + ',')
       end
     else
-      @allfiles[index].each {|line| @solution << partial_solution + line }
+      @allfiles[index].each { |line| @solution << partial_solution + line }
     end
   end
 end
 
 # The remainder is effectively the "main" for this script
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   if ARGV.length > 1
     input_array = []
     ARGV.each do |filename|     # for each file given as a command-line arg...
@@ -43,15 +44,15 @@ if __FILE__ == $0
       # original token separator was).  Take the resulting line and
       # append it to input_array
       input_array << File.open(filename).readlines.collect do |line|
-        line.strip.split(/[\s,:;]+/).join(",")
+        line.strip.split(/[\s,:;]+/).join(',')
       end
     end
 
     c = Cross.new(input_array)
-    c.solution.each {|line| puts line}
+    c.solution.each { |line| puts line }
   else
-    STDERR.print "\n\tMust supply command-line arguments consisting of the names\n"
+    STDERR.print "\n\t"
+    STDERR.print "Must supply command-line arguments consisting of the names\n"
     STDERR.print "\tof two or more design files.\n\n"
   end
 end
-

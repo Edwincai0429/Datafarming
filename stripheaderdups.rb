@@ -10,10 +10,10 @@
 # and then operates in-place on the specified file.
 #
 
-$-i = ".orig"   # specify backup suffix
+$-i = '.orig'   # specify backup suffix
 
-oldfilename = ""
-header = ""
+oldfilename = ''
+header = ''
 
 ARGF.each do |line|
   if ARGF.filename == oldfilename   # if it's an old file
