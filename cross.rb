@@ -15,7 +15,7 @@ class Cross
   def initialize(array_of_arrays)
     @allfiles = array_of_arrays
     @solution = []
-    recursive_build(0, '')
+    recursive_build(0, [])
   end
 
   private
@@ -25,10 +25,12 @@ class Cross
   def recursive_build(index, partial_solution)
     if index < @allfiles.size - 1
       @allfiles[index].each do |line|
-        recursive_build(index + 1, partial_solution + line + ',')
+        recursive_build(index + 1, partial_solution + line)
       end
     else
-      @allfiles[index].each { |line| @solution << partial_solution + line }
+      @allfiles[index].each do |line|
+        @solution << (partial_solution + line).join(',')
+      end
     end
   end
 end
@@ -43,8 +45,8 @@ if __FILE__ == $PROGRAM_NAME
       # with commas (i.e., standardize on CSV regardless of what the
       # original token separator was).  Take the resulting line and
       # append it to input_array
-      input_array << File.open(filename).readlines.collect do |line|
-        line.strip.split(/[,:;]|\s+/).join(',')
+      input_array << File.open(filename).readlines.map do |line|
+        line.strip.split(/[,:;]|\s+/)
       end
     end
 
