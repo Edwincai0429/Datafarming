@@ -1,36 +1,30 @@
 #!/usr/bin/env ruby -w
 
-# The "Cross" class creates a large combinatorial
+# The "cross" method creates a large combinatorial
 # design by crossing all combinations of individual
-# smaller designs.  It uses recursion to do so
-# because we don't know how many designs there may
-# be in the input set.
-class Cross
-  # create the solution set and a getter method for it.
-  attr_reader :solution
+# smaller designs.  It uses a recursive back-end to
+# do so because we don't know how many designs there
+# may be in the input set.
+#
+# The method takes an array of arrays, where
+# each sub-array contains a single component design,
+# and kicks off the recursive build process.
+def cross(array_of_arrays)
+  solution = []
+  recursive_build(array_of_arrays, 0, [], solution)
+  solution
+end
 
-  # the Constructor takes an array of arrays, where
-  # each sub-array contains a single component design,
-  # and kicks off the recursive build process.
-  def initialize(array_of_arrays)
-    @allfiles = array_of_arrays
-    @solution = []
-    recursive_build(0, [])
-  end
+private
 
-  private
-
-  # the following should never be invoked by end users,
-  # it is only called by the constructor after suitable setup
-  def recursive_build(index, partial_solution)
-    if index < @allfiles.size - 1
-      @allfiles[index].each do |line|
-        recursive_build(index + 1, partial_solution + line)
-      end
-    else
-      @allfiles[index].each do |line|
-        @solution << (partial_solution + line).join(',')
-      end
+# The following should never be invoked by end users, it is
+# only called by the cross method after suitable setup
+def recursive_build(inputs, index, partial_soln, full_soln)
+  if index >= inputs.size
+    full_soln << partial_soln.join(',')
+  else
+    inputs[index].each do |line|
+      recursive_build(inputs, index + 1, partial_soln + line, full_soln)
     end
   end
 end
@@ -50,8 +44,8 @@ if __FILE__ == $PROGRAM_NAME
       end
     end
 
-    c = Cross.new(input_array)
-    c.solution.each { |line| puts line }
+    c = cross(input_array)
+    c.each { |line| puts line }
   else
     STDERR.print "\n\t"
     STDERR.print "Must supply command-line arguments consisting of the names\n"
