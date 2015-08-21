@@ -44,7 +44,7 @@ if __FILE__ == $PROGRAM_NAME
       # original token separator was).  Take the resulting line and
       # append it to input_array
       input_array << File.open(filename).readlines.collect do |line|
-        line.strip.split(/[\s,:;]+/).join(',')
+        line.strip.split(/[,:;]|\s+/).join(',')
       end
     end
 
