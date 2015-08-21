@@ -35,17 +35,12 @@ if __FILE__ == $PROGRAM_NAME
     input_array = []
     ARGV.each do |filename|     # for each file given as a command-line arg...
       # open the file, read all the lines, and then for each line use
-      # spaces, commas, colons, or semicolons to tokenize, then rejoin
-      # with commas (i.e., standardize on CSV regardless of what the
-      # original token separator was).  Take the resulting line and
-      # append it to input_array
+      # spaces, commas, colons, or semicolons to tokenize.
       input_array << File.open(filename).readlines.map do |line|
         line.strip.split(/[,:;]|\s+/)
       end
     end
-
-    c = cross(input_array)
-    c.each { |line| puts line }
+    cross(input_array).each { |line| puts line }
   else
     STDERR.print "\n\t"
     STDERR.print "Must supply command-line arguments consisting of the names\n"
