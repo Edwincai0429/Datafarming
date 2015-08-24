@@ -11,7 +11,7 @@
 # and kicks off the recursive build process.
 def cross(inputs, idx = 0, tmp = [], solution = [])
   if idx >= inputs.size
-    solution << tmp.join(',')
+    solution << tmp
   else
     inputs[idx].each { |dp| cross(inputs, idx + 1, tmp + dp, solution) }
   end
@@ -29,7 +29,7 @@ if __FILE__ == $PROGRAM_NAME
         line.strip.split(/[,:;]|\s+/)
       end
     end
-    cross(input_array).each { |line| puts line }
+    cross(input_array).each { |line| puts line.join(',') }
   else
     STDERR.print "\n\t"
     STDERR.print "Must supply command-line arguments consisting of the names\n"
