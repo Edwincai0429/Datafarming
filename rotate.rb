@@ -8,11 +8,11 @@ class Scaler
   def initialize(min, max, num_decimals, lh_max = 17)
     @min = min
     @range = (max - min) / (lh_max - 1).to_r
-    @scale_factor = 10r**num_decimals
+    @scale_factor = 10.to_r**num_decimals
   end
 
   def scale(value)
-    new_value = @min + @range * (value.to_r - 1r)
+    new_value = @min + @range * (value.to_r - 1.to_r)
     if @scale_factor == 1
       new_value.round
     else
