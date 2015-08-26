@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require_relative './design_table.rb'
+require_relative './nolh_designs.rb'
 
 # Scaler objects will rescale a Latin Hypercube design from standard units
 # to a range as specified by min, max, and num_decimals
