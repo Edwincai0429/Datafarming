@@ -21,24 +21,47 @@ class Scaler
   end
 end
 
-lh_size = 17
+min_values = STDIN.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
+max_values = STDIN.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
+decimals = STDIN.gets.strip.split(/[,;:]|\s+/).map(&:to_i)
 
-scale_obj = [
-  Scaler.new(-8, 8, 0, lh_size),
-  Scaler.new(-16, 16, 0, lh_size),
-  Scaler.new(-8, 8, 1, lh_size),
-  Scaler.new(-8, 8, 2, lh_size),
-  Scaler.new(1, 17, 0, lh_size),
-  Scaler.new(0, 1, 0, lh_size),
-  Scaler.new(0, 10, 2, lh_size)
-]
+return if min_values.size != max_values.size || min_values.size != decimals.size
+lh_size = case min_values.size
+          when 1..7
+            17
+          when 8..11
+            33
+          when 12..16
+            65
+          when 17..22
+            129
+          when 23..29
+            257
+          else
+            fail 'invalid number of factors'
+  end
 
+scale_obj = Array.new(min_values.size) do |i|
+  Scaler.new(min_values[i], max_values[i], decimals[i], lh_size)
+end
+
+# scale_obj = [
+#   Scaler.new(-8, 8, 0, lh_size),
+#   Scaler.new(-16, 16, 0, lh_size),
+#   Scaler.new(-8, 8, 1, lh_size),
+#   Scaler.new(-8, 8, 2, lh_size),
+#   Scaler.new(1, 17, 0, lh_size),
+#   Scaler.new(0, 1, 0, lh_size),
+#   Scaler.new(0, 10, 2, lh_size)
+# ]
+#
 design = DESIGN_TABLE[lh_size]
+mid_range = lh_size / 2
 num_rotations = (ARGV.shift || design[0].length).to_i
-num_rotations.times do
+num_rotations.times do |rotation_num|
   design.each_with_index do |dp, i|
     scaled_dp = dp.map.with_index { |x, k| scale_obj[k].scale(x) }
-    puts scaled_dp.join "\t"
+    puts scaled_dp.join "\t" unless rotation_num > 0 && i == mid_range
     design[i] = dp.rotate
   end
 end
