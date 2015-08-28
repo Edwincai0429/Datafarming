@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby -w
-# converts blank seperated files to csv
-while line = gets
-  puts line.strip.split(/,/).join(" ")
-end
+#!/usr/bin/env ruby -W0
+# converts csv separated files to blank separated
+$-i = '.orig'
+ARGF.each { |line| puts line.strip.gsub(/,/, ' ') }
