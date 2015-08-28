@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby -W0
-# converts csv separated files to blank separated
+# converts blank separated files to csv
 $-i = '.orig'
 ARGF.each { |line| puts line.strip.gsub(/\s+/, ',') }
