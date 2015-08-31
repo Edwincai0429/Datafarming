@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 
-print = false   # default is to run rather than print
-destructive = false   # default is non-destructive for output file
+print = false # default is to run rather than print
+destructive = false # default is non-destructive for output file
 
 while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45)
   case ARGV.shift

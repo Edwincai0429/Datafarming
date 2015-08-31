@@ -2,11 +2,20 @@
 
 require 'rubygems' if RUBY_VERSION =~ /^1\.8/
 
+# Monkey patch String to add colorizing.
 class String
   # colorizing
-  def colorize(color_code); "\e[#{color_code}m#{self}\e[0m"; end
-  def red; colorize(31); end
-  def yellow; colorize(33); end
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def yellow
+    colorize(33)
+  end
 end
 
 begin
@@ -25,7 +34,7 @@ if ARGV.length > 0
 
   ARGV.each do |fname|
     data = File.readlines(fname)
-    data.shift if data[0] =~ /[A-Za-z]/   # strip header if one present
+    data.shift if data[0] =~ /[A-Za-z]/ # strip header if one present
     data.map! { |line| line.chomp.strip.to_f }
     m_stats = QuickStats.new
     warmup = [(data.length * 0.5).to_i, data.length - 10].min
