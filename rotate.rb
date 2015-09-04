@@ -1,6 +1,74 @@
 #!/usr/bin/env ruby -w
 
-require_relative './nolh_designs.rb'
+# Monkey patch String to add colorizing.
+class String
+  # colorizing
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def yellow
+    colorize(33)
+  end
+end
+
+def clean_abort(msg_array)
+  STDERR.puts
+  msg_array.each { |line| STDERR.puts "\t#{line}" }
+  STDERR.puts
+  exit
+end
+
+def help_msg
+  clean_abort [
+    'Syntax:'.red,
+    "\n\truby #{$PROGRAM_NAME.split(%r{/|\\})[-1]} [--help]".yellow +
+      " [--rotations #] [--size #] [file_name]\n".yellow,
+    'Arguments in quare brackets are optional.  In the following',
+    "'|' indicates valid alternatives for invoking the option.", '',
+    '--help | -h | -? | ?',
+    "\tProduce this help message.",
+    '--rotations | -r',
+    "\t# specifies the number rotations. A value of 1 means",
+    "\tprint the base design.  If this option is not specified",
+    "\tthe number of rotations defaults to the number of columns",
+    "\tin the design.  The specified value cannot exceed the",
+    "\tnumber of columns in the design being used.",
+    '--size | -s',
+    "\t# specifies the desired number of levels in the NOLH",
+    "\t(17, 33, 65, 129, or 257).  Defaults to the smallest",
+    "\tdesign which can accommodate the number of factors if",
+    "\tthis option is not specified.",
+    'file_name',
+    "\tThe name of a file containing the factor specifications,",
+    "\tin exactly the same format they would be specified in",
+    "\tthe factor settings fields of the NOLH spreadsheet, i.e.,",
+    "\tthe first line is the set of minimum range values for each",
+    "\tfactor; the second line is maximum range values; and the",
+    "\tthird is the number of decimal places to use for the range",
+    "\tscaling.  If no filename is given, the user can enter",
+    "\tthe values interactively in the specified form (no",
+    "\tprompts are given) or use file redirection with '<'.", '',
+    'Options may be given in any order, but must come before the',
+    'file name if one is provided.  The "--help" option supersedes',
+    'any other choices.'
+  ]
+end
+
+begin
+  require_relative './nolh_designs.rb'
+rescue LoadError
+  clean_abort [
+    'ALERT: Unable to find the file "nolh_designs.rb"!'.red,
+    'Correct this by installing '.yellow +
+      'nolh_designs.rb'.red + ' into'.yellow,
+    'the same directory location as '.yellow + 'rotate.rb'.red + '.'.yellow
+  ]
+end
 
 # Scaler objects will rescale a Latin Hypercube design from standard units
 # to a range as specified by min, max, and num_decimals
@@ -21,34 +89,72 @@ class Scaler
   end
 end
 
-min_values = STDIN.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
-max_values = STDIN.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
-decimals = STDIN.gets.strip.split(/[,;:]|\s+/).map(&:to_i)
+while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
+  current_value = ARGV.shift
+  case current_value
+  when '--rotations', '-r'
+    num_rotations = ARGV.shift.to_i
+  when '--size', '-s'
+    lh_size = ARGV.shift.to_i
+  when '--help', '-h', '-help', '-?', '?'
+    help_msg
+  else
+    clean_abort [
+      'Unknown argument: '.red + "#{current_value}".yellow
+    ]
+  end
+end
+
+min_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
+max_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
+decimals = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_i)
 
 n = min_values.size
-return if max_values.size != n || decimals.size != n
-lh_size = case min_values.size
-          when 1..7
-            17
-          when 8..11
-            33
-          when 12..16
-            65
-          when 17..22
-            129
-          when 23..29
-            257
-          else
-            fail 'invalid number of factors'
-  end
+if max_values.size != n || decimals.size != n
+  clean_abort ['Unequal counts for min, max, and decimals'.red]
+end
+minimal_size = case min_values.size
+               when 1..7
+                 17
+               when 8..11
+                 33
+               when 12..16
+                 65
+               when 17..22
+                 129
+               when 23..29
+                 257
+               else
+                 clean_abort [
+                   'invalid number of factors'.red
+                 ]
+               end
+
+lh_size ||= minimal_size
+
+clean_abort [
+  "Latin hypercube size of #{lh_size} is too small for #{n} factors.".red
+] if lh_size < minimal_size
+
+clean_abort [
+  "Invalid Latin hypercube size: #{lh_size}".red,
+  'Use 17, 33, 65, 129, or 257.'.yellow
+] unless DESIGN_TABLE.keys.include?(lh_size)
 
 factor = Array.new(n) do |i|
   Scaler.new(min_values[i], max_values[i], decimals[i], lh_size)
 end
 
 design = DESIGN_TABLE[lh_size]
+
+num_columns = design[0].length
+num_rotations ||= num_columns
+clean_abort [
+  'Requested rotation exceeds number of columns in latin hypercube '.red +
+    "(#{num_columns})".red
+] if num_rotations > num_columns
+
 mid_range = lh_size / 2
-num_rotations = (ARGV.shift || design[0].length).to_i
 num_rotations.times do |rotation_num|
   design.each_with_index do |dp, i|
     scaled_dp = dp.slice(0, n).map.with_index { |x, k| factor[k].scale(x) }
