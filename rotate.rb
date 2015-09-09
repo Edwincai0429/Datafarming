@@ -18,7 +18,7 @@ end
 
 def clean_abort(msg_array)
   STDERR.puts
-  msg_array.each { |line| STDERR.puts "\t#{line}" }
+  msg_array.each { |line| STDERR.puts "#{line}" }
   STDERR.puts
   exit
 end
@@ -28,34 +28,30 @@ def help_msg
     'Syntax:'.red,
     "\n\truby #{$PROGRAM_NAME.split(%r{/|\\})[-1]} [--help]".yellow +
       " [--rotations #] [--size #] [file_name]\n".yellow,
-    'Arguments in square brackets are optional.  In the following',
-    "'|' indicates valid alternatives for invoking the option.", '',
+    "Arguments in square brackets are optional.  In the following, '|'",
+    'indicates valid alternatives for invoking the option.', '',
     '--help | -h | -? | ?',
     "\tProduce this help message.",
     '--rotations | -r',
-    "\t# specifies the number of rotations. A value of 1 means",
-    "\tprint the base design.  If this option is not specified",
-    "\tthe number of rotations defaults to the number of columns",
-    "\tin the design.  The specified value cannot exceed the",
-    "\tnumber of columns in the design being used.",
+    "\t# specifies the number of rotations. A value of 1 means print the",
+    "\tbase design.  If this option is not specified the number of rotations",
+    "\tdefaults to the number of columns in the design.  The specified value",
+    "\tcannot exceed the number of columns in the design being used.",
     '--size | -s',
-    "\t# specifies the desired number of levels in the NOLH",
-    "\t(17, 33, 65, 129, or 257).  Defaults to the smallest",
-    "\tdesign which can accommodate the number of factors if",
-    "\tthis option is not specified.",
+    "\t# specifies the desired number of levels in the NOLH (17, 33, 65, 129,",
+    "\tor 257).  Defaults to the smallest design which can accommodate the",
+    "\tnumber of factors if this option is not specified.",
     'file_name',
-    "\tThe name of a file containing the factor specifications,",
-    "\tin exactly the same format they would be specified in",
-    "\tthe factor settings fields of the NOLH spreadsheet, i.e.,",
-    "\tthe first line is the set of minimum range values for each",
-    "\tfactor; the second line is maximum range values; and the",
-    "\tthird is the number of decimal places to use for the range",
-    "\tscaling.  If no filename is given, the user can enter",
-    "\tthe values interactively in the specified form (no",
-    "\tprompts are given) or use file redirection with '<'.", '',
-    'Options may be given in any order, but must come before the',
-    'file name if one is provided.  The "--help" option supersedes',
-    'any other choices.'
+    "\tThe name of a file containing the factor specifications, in exactly",
+    "\tthe same format they would be specified in the factor settings fields",
+    "\tof the NOLH spreadsheet, i.e., the first line is the set of minimum",
+    "\trange values for each factor; the second line is maximum range values;",
+    "\tand the third is the number of decimal places to use for the range",
+    "\tscaling.  If no filename is given, the user can enter the values",
+    "\tinteractively in the specified form (no prompts are given) or use",
+    "\tfile redirection with '<'.", '',
+    'Options may be given in any order, but must come before the file name',
+    'if one is provided.  The "--help" option supersedes any other choices.',
   ]
 end
 
