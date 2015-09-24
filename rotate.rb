@@ -16,16 +16,20 @@ class String
   end
 end
 
-def clean_abort(msg_array)
+def err_msg(msg_array)
   STDERR.puts
   msg_array.each { |line| STDERR.puts "#{line}" }
   STDERR.puts
+end
+
+def clean_abort(msg_array)
+  err_msg(msg_array)
   exit
 end
 
 def help_msg
   clean_abort [
-    'Syntax:'.red,
+    'Syntax:',
     "\n\truby #{$PROGRAM_NAME.split(%r{/|\\})[-1]} [--help]".yellow +
       " [--rotations #] [--size #] [file_name]\n".yellow,
     "Arguments in square brackets are optional.  In the following, '|'",
@@ -51,7 +55,7 @@ def help_msg
     "\tinteractively in the specified form (no prompts are given) or use",
     "\tfile redirection with '<'.", '',
     'Options may be given in any order, but must come before the file name',
-    'if one is provided.  The "--help" option supersedes any other choices.',
+    'if one is provided.  The "--help" option supersedes any other choices.'
   ]
 end
 
@@ -95,19 +99,26 @@ while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
   when '--help', '-h', '-help', '-?', '?'
     help_msg
   else
-    clean_abort [
+    err_msg [
       'Unknown argument: '.red + "#{current_value}".yellow
     ]
+    help_msg
   end
 end
 
-min_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
-max_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
-decimals = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_i)
+begin
+  min_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
+  max_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
+  decimals = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_i)
+rescue StandardError => e
+  err_msg [e.message.red]
+  help_msg
+end
 
 n = min_values.size
 if max_values.size != n || decimals.size != n
-  clean_abort ['Unequal counts for min, max, and decimals'.red]
+  err_msg ['Unequal counts for min, max, and decimals'.red]
+  help_msg
 end
 minimal_size = case min_values.size
                when 1..7
@@ -124,6 +135,7 @@ minimal_size = case min_values.size
                  clean_abort [
                    'invalid number of factors'.red
                  ]
+                 help_msg
                end
 
 lh_size ||= minimal_size
