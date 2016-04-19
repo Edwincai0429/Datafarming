@@ -47,7 +47,7 @@ if ARGV.length > 0
 
     while index > -1
       m_stats.new_obs(data[index])
-      best = [m_stats.std_err, m_stats.avg, index] if m_stats.std_err < best[0]
+      best = [m_stats.std_err, m_stats.avg, index] if m_stats.std_err <= best[0]
       index -= 1
     end
 
