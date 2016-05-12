@@ -1,51 +1,29 @@
 #!/usr/bin/env ruby -w
 
-# Monkey patch String to add colorizing.
-class String
-  # colorizing
-  def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
-  end
+require 'colorize'
+require_relative 'error_handling'
 
-  def red
-    colorize(31)
-  end
-
-  def yellow
-    colorize(33)
-  end
-end
-
-def err_msg(msg_array)
-  STDERR.puts
-  msg_array.each { |line| STDERR.puts "#{line}" }
-  STDERR.puts
-end
-
-def clean_abort(msg_array)
-  err_msg(msg_array)
-  exit
-end
+String.disable_colorization false
 
 def help_msg
   clean_abort [
     'Syntax:',
     "\n\truby #{$PROGRAM_NAME.split(%r{/|\\})[-1]} [--help]".yellow +
-      " [--rotations #] [--size #] [file_name]\n".yellow,
+    " [--rotations #] [--size #] [file_name]\n".yellow,
     "Arguments in square brackets are optional.  In the following, '|'",
     'indicates valid alternatives for invoking the option.', '',
-    '--help | -h | -? | ?',
+    '  --help | -h | -? | ?'.green,
     "\tProduce this help message.",
-    '--rotations | -r',
+    '  --rotations | -r'.green,
     "\t# specifies the number of rotations. A value of 1 means print the",
     "\tbase design.  If this option is not specified the number of rotations",
     "\tdefaults to the number of columns in the design.  The specified value",
     "\tcannot exceed the number of columns in the design being used.",
-    '--size | -s',
+    '  --size | -s'.green,
     "\t# specifies the desired number of levels in the NOLH (17, 33, 65, 129,",
     "\tor 257).  Defaults to the smallest design which can accommodate the",
     "\tnumber of factors if this option is not specified.",
-    'file_name',
+    '  file_name'.green,
     "\tThe name of a file containing the factor specifications, in exactly",
     "\tthe same format they would be specified in the factor settings fields",
     "\tof the NOLH spreadsheet, i.e., the first line is the set of minimum",
@@ -55,7 +33,9 @@ def help_msg
     "\tinteractively in the specified form (no prompts are given) or use",
     "\tfile redirection with '<'.", '',
     'Options may be given in any order, but must come before the file name',
-    'if one is provided.  The "--help" option supersedes any other choices.'
+    'if one is provided.  The "--help" option supersedes any other choices.',
+    '', 'Results are written to ' + 'stdout'.light_blue +
+    ', and can be redirected as desired.'
   ]
 end
 
@@ -65,8 +45,8 @@ rescue LoadError
   clean_abort [
     'ALERT: Unable to find the file "nolh_designs.rb"!'.red,
     'Correct this by installing '.yellow +
-      'nolh_designs.rb'.red + ' into'.yellow,
-    'the same directory location as '.yellow + 'rotate.rb'.red + '.'.yellow
+    'nolh_designs.rb'.red + ' into'.yellow,
+    'the same directory location as '.yellow + '#{$0}'.red + '.'.yellow
   ]
 end
 
@@ -100,7 +80,7 @@ while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
     help_msg
   else
     err_msg [
-      'Unknown argument: '.red + "#{current_value}".yellow
+      'Unknown argument: '.red + current_value.yellow
     ]
     help_msg
   end
@@ -159,7 +139,7 @@ num_columns = design[0].length
 num_rotations ||= num_columns
 clean_abort [
   'Requested rotation exceeds number of columns in latin hypercube '.red +
-    "(#{num_columns})".red
+  "(#{num_columns})".red
 ] if num_rotations > num_columns
 
 mid_range = lh_size / 2
