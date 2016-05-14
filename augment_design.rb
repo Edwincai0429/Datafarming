@@ -1,15 +1,42 @@
 #!/usr/bin/env ruby -w
 
-# This script generates the star points to augment a fractional factorial
+# This script generates star points to augment a fractional factorial
 # so you can check for quadratic effects.
 
-num_factors = 0
-if ARGV.length == 0 || (ARGV.length > 1 && ARGV.length.odd?)
-  STDERR.puts 'Usage:'
-  STDERR.puts "\t#{$PROGRAM_NAME} number_of_factors"
-  STDERR.puts 'OR'
-  STDERR.puts "\t#{$PROGRAM_NAME} low1 hi1 low2 hi2...lowN hiN"
+require 'colorize'
+require 'optparse'
+
+require_relative 'error_handling'
+
+String.disable_colorization false
+
+help_msg = [
+  'Generate star points to augment a fractional factorial ' \
+  'with quadratic effects.',
+  'Results are white-space delimited data written to ' +
+    'stdout'.light_blue + ', and can be redirected', 'as desired.', '',
+  'Syntax:',
+  "\n\truby #{ErrorHandling.prog_name} [--help] FACTOR_INFO".yellow, '',
+  "Arguments in square brackets are optional.  A vertical bar '|'",
+  'indicates valid alternatives for invoking the option.', '',
+  '  --help | -h | -? | ?'.green,
+  "\tProduce this help message.",
+  '  FACTOR_INFO'.green,
+  "\tEITHER the number of factors (produces standardized +/-1 design),",
+  "\tOR pairs of values " + 'low1 hi1 low2 hi2...lowN hiN'.green +
+    ' for each of the',
+  "\tN factors.", ''
+]
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [-h|--help] [number of factors]"
+  opts.on('-h', '-?', '--help') { ErrorHandling.clean_abort help_msg }
+end.parse!
+
+if ARGV.length == 0 || (ARGV[0] == '?') || (ARGV.length > 1 && ARGV.length.odd?)
+  ErrorHandling.clean_abort help_msg
 else
+  num_factors = 0
   if ARGV.length == 1
     num_factors = ARGV.shift.to_i
     x = Array.new(num_factors, ' 0')
@@ -23,7 +50,7 @@ else
       x[i] = 0.5 * (ranges[2 * i].to_f + ranges[2 * i + 1].to_f)
     end
   end
-  # create and pring an array at the global center point (0,0,...,0)
+  # create and print an array at the global center point (0,0,...,0)
   puts x.join(' ')
 
   # now generate and print the star points at +/-1 along each factor axis

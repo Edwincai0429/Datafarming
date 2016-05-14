@@ -1,15 +1,24 @@
 #!/usr/bin/env ruby -w
 
 require 'colorize'
-require_relative 'error_handling'
-
 String.disable_colorization false
 
+require_relative 'error_handling'
+
+begin
+  require_relative './nolh_designs'
+rescue LoadError
+  ErrorHandling.cant_find 'nolh_designs.rb'
+end
+
 help_msg = [
+  'Generate scaled Latin hypercube designs with rotation and stacking. ',
+  'Results are white-space delimited data written to ' +
+    'stdout'.light_blue + ', and can be', 'redirected as desired.', '',
   'Syntax:',
   "\n\truby #{$PROGRAM_NAME.split(%r{/|\\})[-1]} [--help]".yellow +
     " [--rotations #] [--size #] [file_name]\n".yellow,
-  "Arguments in square brackets are optional.  In the following, '|'",
+  "Arguments in square brackets are optional.  A vertical bar '|'",
   'indicates valid alternatives for invoking the option.', '',
   '  --help | -h | -? | ?'.green,
   "\tProduce this help message.",
@@ -32,21 +41,8 @@ help_msg = [
   "\tinteractively in the specified form (no prompts are given) or use",
   "\tfile redirection with '<'.", '',
   'Options may be given in any order, but must come before the file name',
-  'if one is provided.  The "--help" option supersedes any other choices.', '',
-  'Results are written to ' + 'stdout'.light_blue +
-    ', and can be redirected as desired.'
+  'if one is provided.  The "--help" option supersedes any other choices.'
 ]
-
-begin
-  require_relative './nolh_designs.rb'
-rescue LoadError
-  ErrorHandling.clean_abort [
-    'ALERT: Unable to find the file "nolh_designs.rb"!'.red,
-    'Correct this by installing '.yellow +
-    'nolh_designs.rb'.red + ' into'.yellow,
-    'the same directory location as '.yellow + '#{$0}'.red + '.'.yellow
-  ]
-end
 
 # Scaler objects will rescale a Latin Hypercube design from standard units
 # to a range as specified by min, max, and num_decimals
