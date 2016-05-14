@@ -12,4 +12,16 @@ module ErrorHandling
     message(msg_array)
     exit
   end
+
+  def self.prog_name
+    $PROGRAM_NAME.split(%r{/|\\})[-1]
+  end
+
+  def self.cant_find(file_name)
+    clean_abort [
+      'ERROR: Cannot find file '.red + file_name.yellow, '',
+      'Correct this by installing ' + file_name.yellow + ' into the same',
+      'directory location as ' + prog_name.yellow + '.'
+    ]
+  end
 end
