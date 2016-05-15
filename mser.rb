@@ -1,66 +1,68 @@
 #!/usr/bin/env ruby -w
 
 require 'rubygems' if RUBY_VERSION =~ /^1\.8/
+require 'colorize'
 
-# Monkey patch String to add colorizing.
-class String
-  # colorizing
-  def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
-  end
+String.disable_colorization false
 
-  def red
-    colorize(31)
-  end
-
-  def yellow
-    colorize(33)
-  end
-end
+require 'optparse'
+require_relative 'error_handling'
 
 begin
   require 'quickstats'
 rescue LoadError
-  STDERR.puts "\n\tALERT: quickstats gem is not installed!".red
-  STDERR.puts "\tIf you have network connectivity, type:"
-  STDERR.puts "\n\t\tgem install quickstats\n".yellow
-  STDERR.puts "\t(Admin privileges may be required.)\n\n"
-  exit(-1)
+  ErrorHandling.clean_abort [
+    "\n\tALERT: quickstats gem is not installed!".red,
+    "\tIf you have network connectivity, type:",
+    "\n\t\tgem install quickstats\n".yellow,
+    "\t(Admin privileges may be required.)\n\n"
+  ]
 end
 
-if ARGV.length > 0
+help_msg = [
+  'Calculate MSER truncation statistics for two or more input files.', '',
+  'Input files should consist of one column of data per file, with or',
+  'without headers.  The output consists of one line per input file,',
+  'comprised of the MSER-based average of the data and the number of',
+  'observations used to calculate that average, separated by commas.',
+  'Output is written to ' + 'stdout'.blue + ' in CSV format, with headers.', '',
+  'Syntax:',
+  "\n\truby #{ErrorHandling.prog_name} [--help] filenames...".yellow, '',
+  "Arguments in square brackets are optional.  A vertical bar '|'",
+  'indicates valid alternatives for invoking the option.', '',
+  '  --help | -h | -? | ?'.green,
+  "\tProduce this help message.",
+  '  filenames...'.green,
+  "\tThe names of two or more files containing data to be analyzed."
+]
 
-  puts 'x-bar,n'
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [-h|--help] filenames..."
+  opts.on('-h', '-?', '--help') { ErrorHandling.clean_abort help_msg }
+end.parse!
 
-  ARGV.each do |fname|
-    data = File.readlines(fname)
-    data.shift if data[0] =~ /[A-Za-z]/ # strip header if one present
-    data.map! { |line| line.chomp.strip.to_f }
-    m_stats = QuickStats.new
-    warmup = [(data.length * 0.5).to_i, data.length - 10].min
-    index = data.length - 1
-    while index > (data.length - warmup) && index > 1
-      m_stats.new_obs(data[index])
-      index -= 1
-    end
-    best = [m_stats.std_err, m_stats.avg, warmup]
+ErrorHandling.clean_abort help_msg if ARGV[0] == '?' || ARGV.length < 2
 
-    while index > -1
-      m_stats.new_obs(data[index])
-      best = [m_stats.std_err, m_stats.avg, index] if m_stats.std_err <= best[0]
-      index -= 1
-    end
+puts 'x-bar,n'
 
-    printf "%f,%d\n", best[1], data.length - best[2]
+ARGV.each do |fname|
+  data = File.readlines(fname)
+  data.shift if data[0] =~ /[A-Za-z]/ # strip header if one present
+  data.map! { |line| line.chomp.strip.to_f }
+  m_stats = QuickStats.new
+  warmup = [(data.length * 0.5).to_i, data.length - 10].min
+  index = data.length - 1
+  while index > (data.length - warmup) && index > 1
+    m_stats.new_obs(data[index])
+    index -= 1
   end
-else
-  STDERR.puts
-  STDERR.puts ' Must supply at least one argument.  Syntax:'
-  STDERR.puts
-  STDERR.puts "\truby #{$PROGRAM_NAME} filename(s)...".yellow
-  STDERR.puts
-  STDERR.puts ' The files specified as filenames (explicit list or wildcard)'
-  STDERR.puts ' should be one column of output data per file, with no headers.'
-  STDERR.puts ' Results are written to stdout and can be redirected as desired.'
-  STDERR.puts
+  best = [m_stats.std_err, m_stats.avg, warmup]
+
+  while index > -1
+    m_stats.new_obs(data[index])
+    best = [m_stats.std_err, m_stats.avg, index] if m_stats.std_err <= best[0]
+    index -= 1
+  end
+
+  printf "%f,%d\n", best[1], data.length - best[2]
 end
