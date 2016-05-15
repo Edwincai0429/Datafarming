@@ -74,13 +74,10 @@ while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
       "Invalid Latin hypercube size: #{lh_size}".red,
       'Use 17, 33, 65, 129, or 257.'.yellow
     ] unless NOLH::DESIGN_TABLE.keys.include?(lh_size)
-
   when '--help', '-h', '-help', '-?', '?'
     ErrorHandling.clean_abort help_msg
   else
-    ErrorHandling.message [
-      'Unknown argument: '.red + current_value.yellow
-    ]
+    ErrorHandling.message ['Unknown argument: '.red + current_value.yellow]
     ErrorHandling.clean_abort help_msg
   end
 end
@@ -111,9 +108,7 @@ minimal_size = case min_values.size
                when 23..29
                  257
                else
-                 ErrorHandling.message [
-                   'invalid number of factors'.red
-                 ]
+                 ErrorHandling.message ['invalid number of factors'.red]
                  ErrorHandling.clean_abort help_msg
                end
 
