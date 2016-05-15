@@ -22,7 +22,7 @@ help_msg = [
   '  --help | -h | -? | ?'.green,
   "\tProduce this help message.",
   '  filenames...'.green,
-  "\tThe name[s] of the file[s] to be converted.", ''
+  "\tThe name[s] of the file[s] to be converted."
 ]
 
 OptionParser.new do |opts|
