@@ -36,7 +36,7 @@ if __FILE__ == $PROGRAM_NAME
     '  filenames...'.green,
     "\tThe names of the files containing designs to be crossed.",
     "\tInput file data can be delimited by commas, semicolons,",
-    "\tcolons or whitespace."
+    "\tcolons, or whitespace."
   ]
 
   OptionParser.new do |opts|
