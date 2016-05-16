@@ -18,10 +18,11 @@ end
 # The remainder is effectively the "main" for this script
 if __FILE__ == $PROGRAM_NAME
   require 'colorize'
-  require 'optparse'
-  require_relative 'error_handling'
 
   String.disable_colorization false
+
+  require 'optparse'
+  require_relative 'error_handling'
 
   help_msg = [
     'Create a crossed design from two or more input design files',

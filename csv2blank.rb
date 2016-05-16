@@ -2,10 +2,11 @@
 # converts csv separated files to blank separated
 
 require 'colorize'
-require 'optparse'
-require_relative 'error_handling'
 
 String.disable_colorization false
+
+require 'optparse'
+require_relative 'error_handling'
 
 help_msg = [
   'Convert comma separated values data to whitespace delimited.', '',

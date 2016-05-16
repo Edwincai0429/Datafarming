@@ -3,10 +3,11 @@
 # Ruby script to pool the columns of multiple csv files
 
 require 'colorize'
-require 'optparse'
-require_relative 'error_handling'
 
 String.disable_colorization false
+
+require 'optparse'
+require_relative 'error_handling'
 
 help_msg = [
   'Pool the output from two or more CSV files to a single output file.', '',

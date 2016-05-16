@@ -1,16 +1,40 @@
 #! /usr/bin/env ruby -w
-#
-# User supplies the name of a file to be "stripped" on the command-line.
-#
-# This script uses the first line of that file as a "header" template.
-# Subsequent lines of the file are copied to the new version only if
-# they do not match the header.
-#
-# The operation saves the original input file with a suffix of ".orig"
-# and then operates in-place on the specified file.
-#
 
-$-i = '.orig'   # specify backup suffix
+# Strip duplicate headers out of file(s)
+
+require 'colorize'
+
+String.disable_colorization false
+
+require 'optparse'
+require_relative 'error_handling'
+
+help_msg = [
+  'Strip duplicate headers out of one or more file(s).', '',
+  'If filenames are specified, a backup is made for each file with',
+  "suffix '.orig' appended to the original filename and changes will",
+  'be made in-place in the original file.  If no filenames are given,',
+  'the script reads from ' + 'stdin'.blue + ' and writes to ' +
+    'stdout'.blue + '.  In either case,',
+  'all occurrences lines which duplicate the first line are removed.', '',
+  'Syntax:',
+  "\n\truby #{ErrorHandling.prog_name} [--help] [filenames...]".yellow, '',
+  "Arguments in square brackets are optional.  A vertical bar '|'",
+  'indicates valid alternatives for invoking the option.', '',
+  '  --help | -h | -? | ?'.green,
+  "\tProduce this help message.",
+  '  filenames...'.green,
+  "\tThe name[s] of the file[s] to be converted."
+]
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [-h|--help] [filenames...[]"
+  opts.on('-h', '-?', '--help') { ErrorHandling.clean_abort help_msg }
+end.parse!
+
+ErrorHandling.clean_abort help_msg if ARGV[0] == '?'
+
+$-i = '.orig' # specify backup suffix
 
 oldfilename = ''
 header = ''

@@ -2,10 +2,11 @@
 # Ruby script to convert end of line to current system default
 
 require 'colorize'
-require 'optparse'
-require_relative 'error_handling'
 
 String.disable_colorization false
+
+require 'optparse'
+require_relative 'error_handling'
 
 help_msg = [
   'Convert DOS line endings to Unix/Mac OS X line endings or vice versa.', '',

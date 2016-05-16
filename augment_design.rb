@@ -4,11 +4,11 @@
 # so you can check for quadratic effects.
 
 require 'colorize'
-require 'optparse'
-
-require_relative 'error_handling'
 
 String.disable_colorization false
+
+require 'optparse'
+require_relative 'error_handling'
 
 help_msg = [
   'Generate star points to augment a fractional factorial ' \
