@@ -25,3 +25,9 @@ module ErrorHandling
     ]
   end
 end
+
+if __FILE__ == $PROGRAM_NAME
+  require 'colorize'
+  String.disable_colorization false
+  ErrorHandling.message ['This module is not intended to be executable.'.yellow]
+end

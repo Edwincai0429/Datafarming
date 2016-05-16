@@ -899,3 +899,10 @@ module NOLH
     ]
   }.freeze
 end
+
+if __FILE__ == $PROGRAM_NAME
+  require 'colorize'
+  String.disable_colorization false
+  require_relative 'error_handling'
+  ErrorHandling.message ['This module is not intended to be executable.'.yellow]
+end
