@@ -45,19 +45,15 @@ if __FILE__ == $PROGRAM_NAME
     opts.on('-h', '-?', '--help') { ErrorHandling.clean_abort help_msg }
   end.parse!
 
-  ErrorHandling.clean_abort help_msg if ARGV[0] == '?'
+  ErrorHandling.clean_abort help_msg if ARGV[0] == '?' || ARGV.length < 2
 
-  if ARGV.length > 1
-    input_array = []
-    ARGV.each do |filename| # for each file given as a command-line arg...
-      # open the file, read all the lines, and then for each line use
-      # spaces, commas, colons, or semicolons to tokenize.
-      input_array << File.open(filename).readlines.map do |line|
-        line.strip.split(/[,:;]|\s+/)
-      end
+  input_array = []
+  ARGV.each do |filename| # for each file given as a command-line arg...
+    # open the file, read all the lines, and then for each line use
+    # spaces, commas, colons, or semicolons to tokenize.
+    input_array << File.open(filename).readlines.map do |line|
+      line.strip.split(/[,:;]|\s+/)
     end
-    cross(input_array).each { |line| puts line.join(',') }
-  else
-    ErrorHandling.clean_abort help_msg
   end
+  cross(input_array).each { |line| puts line.join(',') }
 end
