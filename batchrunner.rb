@@ -1,15 +1,38 @@
 #!/usr/bin/env ruby -w
 
-# First, process any command-line arguments
+require 'colorize'
+
+String.disable_colorization false
+
+require 'optparse'
+require_relative 'error_handling'
+
+help_msg = [
+  'Run a model interactively with replication.', '',
+  'Prompts the user interactively for a model/program to be run,',
+  'parameter values to use on the model command-line, and desired',
+  'number of replications.  The model is run the specified number',
+  'of times with the given arguments.  Separate output files are',
+  'created for each run of the model.', '',
+  'Syntax:',
+  "\n\truby #{ErrorHandling.prog_name} [--help] ".yellow +
+    '[--outfile fname]'.yellow, '',
+  "Arguments in square brackets are optional.  A vertical bar '|'",
+  'indicates valid alternatives for invoking the option.', '',
+  '  --help | -h | -? | ?'.green,
+  "\tProduce this help message.",
+  '  --outfile fname | -o fname'.green,
+  "\tSpecify a specific prefix for output file names.  Default is 'outfile'"
+]
+
 outfile_name = 'outfile'
-while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45)
-  case ARGV.shift
-  when '--outfile', '-o'
-    outfile_name = ARGV.shift
-  else
-    STDERR.puts 'Unknown argument!'
-  end
-end
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [OPTIONS]"
+  opts.on('-h', '-?', '--help') { ErrorHandling.clean_abort help_msg }
+  opts.on('-o', '--outfile fname') { |fname| outfile_name = fname }
+end.parse!
+
+ErrorHandling.clean_abort help_msg if ARGV[0] == '?' || ARGV.length < 2
 
 cmd = (STDERR.print 'Enter command: '; gets.strip)
 params = (STDERR.print 'Enter parameters: '; gets.strip)
