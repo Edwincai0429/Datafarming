@@ -21,13 +21,13 @@ help_msg = [
   "Arguments in square brackets are optional.  A vertical bar '|'",
   'indicates valid alternatives for invoking the option.', '',
   '  --help | -h | -? | ?'.green,
-  "\tProduce this help message.",
-  '  --rotations | -r'.green,
+  "\tProduce this help message.  Supersedes any other choices.",
+  '  --rotations # | -r #'.green,
   "\t# specifies the number of rotations. A value of 1 means print the",
   "\tbase design.  If this option is not specified the number of rotations",
   "\tdefaults to the number of columns in the design.  The specified value",
   "\tcannot exceed the number of columns in the design being used.",
-  '  --size | -s'.green,
+  '  --size # | -s #'.green,
   "\t# specifies the desired number of levels in the NOLH (17, 33, 65, 129,",
   "\tor 257).  Defaults to the smallest design which can accommodate the",
   "\tnumber of factors if this option is not specified.",
@@ -41,7 +41,7 @@ help_msg = [
   "\tinteractively in the specified form (no prompts are given) or use",
   "\tfile redirection with '<'.", '',
   'Options may be given in any order, but must come before the file name',
-  'if one is provided.  The "--help" option supersedes any other choices.'
+  'if one is provided.'
 ]
 
 # Scaler objects will rescale a Latin Hypercube design from standard units
