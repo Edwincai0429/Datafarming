@@ -22,7 +22,7 @@ help_msg = [
   '  --help | -h | -? | ?'.green,
   "\tProduce this help message.",
   '  --outfile fname | -o fname'.green,
-  "\tSpecify a specific prefix for output file names.  Default is 'outfile'"
+  "\tSpecify a specific prefix for output file names, defaults to 'outfile'."
 ]
 
 outfile_name = 'outfile'
