@@ -32,7 +32,7 @@ OptionParser.new do |opts|
   opts.on('-o', '--outfile fname') { |fname| outfile_name = fname }
 end.parse!
 
-ErrorHandling.clean_abort help_msg if ARGV[0] == '?' || ARGV.length < 2
+ErrorHandling.clean_abort help_msg if ARGV[0] == '?'
 
 cmd = (STDERR.print 'Enter command: '; gets.strip)
 params = (STDERR.print 'Enter parameters: '; gets.strip)
