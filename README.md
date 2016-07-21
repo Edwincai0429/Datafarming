@@ -18,22 +18,26 @@ will invoke the `stripheaderdups.rb` script and apply it to file `my_file.txt` i
 
 All scripts in this distribution are self describing if run with a `--help`, `-h`, or `-?` option.
 
-### EXECUTE FROM ANYWHERE (OPTIONAL)
+### EXECUTE FROM ANYWHERE
 
 To be able to execute these shell scripts regardless of where you are working, you will need to add the directory where they reside to the system `PATH` environment variable.  The mechanism for doing so depends on your system. The changes described below only need to be performed one time.
 
 #### OS X
 
-On an OS X machine, you need to update the PATH using the `.bash_profile` configuration file which resides in your home directory.  For instance, if I have downloaded these scripts to `~/DataFarming/UsefulRubyScripts`, then I would use a text editor to add the following lines to `~/.bash_profile`:
+On an OS X machine, you need to update the PATH environment variable by editing the `.bash_profile` configuration file that resides in your home directory.  As an example, if these scripts were downloaded to `~/datafarmingrubyscripts` you can use your favorite text editor to add the following lines to `~/.bash_profile`:
 
-    if [ -d ~/DataFarming/UsefulRubyScripts ]; then
-       PATH="${PATH}:~/DataFarming/UsefulRubyScripts"
+    if [ -d ~/datafarmingrubyscripts ]; then
+      PATH="${PATH}:~/datafarmingrubyscripts"
     fi
     export PATH
 
-Finally, make sure that the ruby scripts are all executable:
+Finally, enter the following command ***one time*** in a terminal window to make sure that the ruby scripts are all executable:
 
-    chmod a+x ~/DataFarming/UsefulRubyScripts/*.rb
+    chmod a+x ~/datafarmingrubyscripts/*.rb
+
+Some additional notes:
+  1) The symbol '~' is a Unix shorthand for your home directory.
+  2) You can display "hidden" files such as .bash_profile from the "File -> Open" menu of most text editors by typing "Command-Shift-." (note the period at the end!) to make the hidden files visible.
 
 #### WINDOWS
 
