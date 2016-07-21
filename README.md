@@ -36,8 +36,8 @@ Finally, enter the following command ***one time*** in a terminal window to make
     chmod a+x ~/datafarmingrubyscripts/*.rb
 
 Some additional notes:
-  1) The symbol '~' is a Unix shorthand for your home directory.
-  2) You can display "hidden" files such as .bash_profile from the "File -> Open" menu of most text editors by typing "Command-Shift-." (note the period at the end!) to make the hidden files visible.
+    1. The symbol '~' is a Unix shorthand for your home directory.
+    2. You can display "hidden" files such as .bash_profile from the "File -> Open" menu of most text editors by typing "Command-Shift-." (note the period at the end!) to make the hidden files visible.
 
 #### WINDOWS
 
