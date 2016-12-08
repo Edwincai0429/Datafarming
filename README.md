@@ -1,6 +1,6 @@
 ### SETUP
 
-You will need to have Ruby v2.0 or later installed on your system.  On OS X, Ruby comes pre-installed.  For Windows we recommend the installer packages available from [rubyinstaller.org](http://rubyinstaller.org/).  You will need to determine whether your have a 32 or 64 bit processor, and download the appropriate installer.  We currently are recommending Ruby v2.2.X due to its stability and speed.  When installing, check the checkboxes to add the Ruby installation to your PATH and to associate `.rb` and `.rbw` files with Ruby&mdash;doing so will make your life simpler going forward.
+You will need to have Ruby v2.0 or later installed on your system.  On OS X, Ruby comes pre-installed.  For Windows we recommend the installer packages available from [rubyinstaller.org](http://rubyinstaller.org/).  You will need to determine whether your have a 32 or 64 bit processor, and download the appropriate installer.  We currently are recommending Ruby v2.2.X due to its stability and speed.  When installing, check the checkboxes to add the Ruby installation to your PATH and to associate `.rb` and `.rbw` files with Ruby—doing so will make your life simpler going forward.
 
 Several of these scripts use Ruby gems.  Please run the command:
 
