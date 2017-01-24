@@ -32,8 +32,7 @@ Note that:
 
   2. the symbol '~' is a Unix shorthand for your home directory; and
 
-  3. in the following example, you must change ***all*** references to the location
-  if you download your copy to a different name or location.
+  3. in the following example, you must change ***all*** references to the location if you download your copy to a different name or location.
 
 As an example, if these scripts were downloaded to `~/datafarmingrubyscripts` you can use your favorite text editor to add the following lines to `~/.bash_profile`:
 
