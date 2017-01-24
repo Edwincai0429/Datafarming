@@ -24,7 +24,18 @@ To be able to execute these shell scripts regardless of where you are working, y
 
 #### OS X
 
-On an OS X machine, you need to update the PATH environment variable by editing the `.bash_profile` configuration file that resides in your home directory.  As an example, if these scripts were downloaded to `~/datafarmingrubyscripts` you can use your favorite text editor to add the following lines to `~/.bash_profile`:
+On an OS X machine, you need to update the PATH environment variable by editing your `.bash_profile` configuration file, which resides in your home directory.
+
+Note that:
+
+  1. you can display "hidden" files such as .bash_profile from the "File -> Open" menu of most text editors by typing "Command-Shift-." (note the period at the end!) to make the hidden files visible;
+
+  2. the symbol '~' is a Unix shorthand for your home directory; and
+
+  3. in the following example, you must change ***all*** references to the location
+  if you download your copy to a different name or location.
+
+As an example, if these scripts were downloaded to `~/datafarmingrubyscripts` you can use your favorite text editor to add the following lines to `~/.bash_profile`:
 
     if [ -d ~/datafarmingrubyscripts ]; then
       PATH="${PATH}:~/datafarmingrubyscripts"
@@ -34,12 +45,6 @@ On an OS X machine, you need to update the PATH environment variable by editing 
 Finally, enter the following command ***one time*** in a terminal window to make sure that the ruby scripts are all executable:
 
     chmod a+x ~/datafarmingrubyscripts/*.rb
-
-Some additional notes:
-
-  1. The symbol '~' is a Unix shorthand for your home directory.
-
-  2. You can display "hidden" files such as .bash_profile from the "File -> Open" menu of most text editors by typing "Command-Shift-." (note the period at the end!) to make the hidden files visible.
 
 #### WINDOWS
 
