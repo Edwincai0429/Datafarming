@@ -20,12 +20,13 @@ rescue LoadError
 end
 
 help_msg = [
-  'Calculate MSER truncation statistics for two or more input files.', '',
+  'Calculate MSER truncation statistics for one or more input files.', '',
   'Input files should consist of one column of data per file, with or',
   'without headers.  The output consists of one line per input file,',
-  'comprised of the MSER-based average of the data and the number of',
-  'observations used to calculate that average, separated by commas.',
-  'Output is written to ' + 'stdout'.blue + ' in CSV format, with headers.', '',
+  'comprised of the MSER-based average of the data, the number of',
+  'observations used to calculate that average, and the number of',
+  'observations truncated, separated by commas.  Output is written',
+  'to ' + 'stdout'.blue + ' in CSV format, with headers.', '',
   'Syntax:',
   "\n\truby #{ErrorHandling.prog_name} [--help] filenames...".yellow, '',
   "Arguments in square brackets are optional.  A vertical bar '|'",
@@ -41,9 +42,9 @@ OptionParser.new do |opts|
   opts.on('-h', '-?', '--help') { ErrorHandling.clean_abort help_msg }
 end.parse!
 
-ErrorHandling.clean_abort help_msg if ARGV[0] == '?' || ARGV.length < 2
+ErrorHandling.clean_abort help_msg if ARGV.empty? || ARGV[0] == '?'
 
-puts 'x-bar,n'
+puts 'x-bar,n,trunc'
 
 ARGV.each do |fname|
   data = File.readlines(fname)
@@ -64,5 +65,5 @@ ARGV.each do |fname|
     index -= 1
   end
 
-  printf "%f,%d\n", best[1], data.length - best[2]
+  printf "%f,%d,%d\n", best[1], data.length - best[2], best[2]
 end
