@@ -31,15 +31,17 @@ help_msg = [
   "\t# specifies the desired number of levels in the NOLH (17, 33, 65, 129,",
   "\tor 257).  Defaults to the smallest design which can accommodate the",
   "\tnumber of factors if this option is not specified.",
+  '  --excel-style-input # | -e #'.green,
+  "\tSpecify factor ranges and decimals as in the NOLH spreadsheet, i.e.,",
+  "\tthe first line is the set of minimum range values for each factor;",
+  "\tthe second line is maximum range values; and the third is the number",
+  "\tof decimal places to use for the range scaling.  Without this option,",
+  "\tthe default input format is one line per factor, comprised of the min,",
+  "\tmax, and number of decimal places separated by commas or whitespace.",
   '  file_name'.green,
-  "\tThe name of a file containing the factor specifications, in exactly",
-  "\tthe same format they would be specified in the factor settings fields",
-  "\tof the NOLH spreadsheet, i.e., the first line is the set of minimum",
-  "\trange values for each factor; the second line is maximum range values;",
-  "\tand the third is the number of decimal places to use for the range",
-  "\tscaling.  If no filename is given, the user can enter the values",
-  "\tinteractively in the specified form (no prompts are given) or use",
-  "\tfile redirection with '<'.", '',
+  "\tThe name of a file containing the factor specifications.  If no",
+  "\tfilename is given, the user can enter the values interactively in",
+  "\tthe desired form or use file redirection with '<'.", '',
   'Options may be given in any order, but must come before the file name',
   'if one is provided.'
 ]
@@ -63,6 +65,7 @@ class Scaler
   end
 end
 
+excel_style_inputs = false
 while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
   current_value = ARGV.shift
   case current_value
@@ -70,10 +73,14 @@ while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
     num_rotations = ARGV.shift.to_i
   when '--size', '-s'
     lh_size = ARGV.shift.to_i
-    ErrorHandling.clean_abort [
-      "Invalid Latin hypercube size: #{lh_size}".red,
-      'Use 17, 33, 65, 129, or 257.'.yellow
-    ] unless NOLH::DESIGN_TABLE.keys.include?(lh_size)
+    unless NOLH::DESIGN_TABLE.keys.include?(lh_size)
+      ErrorHandling.clean_abort [
+        "Invalid Latin hypercube size: #{lh_size}".red,
+        'Use 17, 33, 65, 129, or 257.'.yellow
+      ]
+    end
+  when '--excel-style-input', '-e'
+    excel_style_inputs = true
   when '--help', '-h', '-help', '-?', '?'
     ErrorHandling.clean_abort help_msg
   else
@@ -83,9 +90,32 @@ while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
 end
 
 begin
-  min_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
-  max_values = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_f)
-  decimals = ARGF.gets.strip.split(/[,;:]|\s+/).map(&:to_i)
+  if excel_style_inputs
+    if ARGV.empty?
+      STDERR.puts  'Enter one line of min values, one of max values,'.green +
+      ' and one of #decimals.'.green
+    end
+    min_values = ARGF.gets.strip.split(/\s*[,;:]\s*|\s+/).map(&:to_f)
+    max_values = ARGF.gets.strip.split(/\s*[,;:]\s*|\s+/).map(&:to_f)
+    decimals = ARGF.gets.strip.split(/\s*[,;:]\s*|\s+/).map(&:to_i)
+  else
+    if ARGV.empty?
+      STDERR.puts  'To terminate input enter '.green + 'ctrl-z'.cyan +
+        ' (Mac/Unix/Linux)'.green + ' or '.green + 'ctrl-d'.cyan +
+        ' (Windows).'.green
+      STDERR.puts  'Enter ranges for each factor on a separate line.'.green
+      STDERR.puts  "\nMIN\tMAX\t#DIGITS".cyan
+    end
+    min_values = []
+    max_values = []
+    decimals = []
+    while line = ARGF.gets
+      values = line.strip.split(/\s*[,;:]\s*|\s+/)
+      min_values << values.shift.to_f
+      max_values << values.shift.to_f
+      decimals << values.shift.to_i
+    end
+  end
 rescue StandardError => e
   ErrorHandling.message [e.message.red]
   ErrorHandling.clean_abort help_msg
@@ -114,9 +144,11 @@ minimal_size = case min_values.size
 
 lh_size ||= minimal_size
 
-ErrorHandling.clean_abort [
-  "Latin hypercube size of #{lh_size} is too small for #{n} factors.".red
-] if lh_size < minimal_size
+if lh_size < minimal_size
+  ErrorHandling.clean_abort [
+    "Latin hypercube size of #{lh_size} is too small for #{n} factors.".red
+  ]
+end
 
 factor = Array.new(n) do |i|
   Scaler.new(min_values[i], max_values[i], decimals[i], lh_size)
@@ -126,10 +158,12 @@ design = NOLH::DESIGN_TABLE[lh_size]
 
 num_columns = design[0].length
 num_rotations ||= num_columns
-ErrorHandling.clean_abort [
-  'Requested rotation exceeds number of columns in latin hypercube '.red +
-  "(#{num_columns})".red
-] if num_rotations > num_columns
+if num_rotations > num_columns
+  ErrorHandling.clean_abort [
+    'Requested rotation exceeds number of columns in latin hypercube '.red +
+    "(#{num_columns})".red
+  ]
+end
 
 mid_range = lh_size / 2
 num_rotations.times do |rotation_num|
