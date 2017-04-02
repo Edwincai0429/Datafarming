@@ -19,7 +19,9 @@ help_msg = [
   "\tProduce this help message.",
   '  filenames...'.green,
   "\tThe name[s] of the file[s] to be concatenated.",
-  "\tRead from " + 'stdin'.blue + ' if no files are specified.'
+  "\tRead from " + 'stdin'.blue + ' if no files are specified.',
+  "\tTo terminate interactive input enter " + 'ctrl-z'.cyan,
+  "\t(Mac/Unix/Linux) or " + 'ctrl-d'.cyan + ' (Windows).'
 ]
 
 OptionParser.new do |opts|
