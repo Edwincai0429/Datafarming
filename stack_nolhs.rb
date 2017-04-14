@@ -100,8 +100,8 @@ begin
     decimals = ARGF.gets.strip.split(/\s*[,;:]\s*|\s+/).map(&:to_i)
   else
     if ARGV.empty?
-      STDERR.puts  'To terminate input enter '.green + 'ctrl-z'.cyan +
-        ' (Mac/Unix/Linux)'.green + ' or '.green + 'ctrl-d'.cyan +
+      STDERR.puts  'To terminate input enter '.green + 'ctrl-d'.cyan +
+        ' (Mac/Unix/Linux)'.green + ' or '.green + 'ctrl-z'.cyan +
         ' (Windows).'.green
       STDERR.puts  'Enter ranges for each factor on a separate line.'.green
       STDERR.puts  "\nMIN\tMAX\t#DIGITS".cyan
