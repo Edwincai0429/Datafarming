@@ -6,7 +6,7 @@ Several of these scripts use Ruby gems.  Please run the command:
 
     gem install quickstats fwt colorize
 
-before attempting to run the scripts in this distribution.  On OS X or Linux systems, you may be required to prefix the `gem install...` command with `sudo` to authenticate the installation.
+before attempting to run the scripts in this distribution.  On OS X or Linux systems, you may be required to use the `sudo` command to to authenticate the installation.  In that case, type `sudo gem install quickstats fwt colorize` and enter your password when prompted.
 
 ### USAGE
 
