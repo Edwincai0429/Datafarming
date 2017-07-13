@@ -47,7 +47,7 @@ Finally, enter the following command ***one time*** in a terminal window to make
 
 #### WINDOWS
 
-The details for setting the `PATH` environment variable are different for different versions of the Windows operating system.  The following assumes that you have put these tools in a folder called `C:\UsefulRubyScripts` on a Windows 10 system:
+The details for setting the `PATH` environment variable are different for different versions of the Windows operating system.  The following example assumes that you are working on a Windows 10 system, and that you have downloaded these scripts to the folder `C:\datafarmingrubyscripts`.  If you have cloned the repository to a different name or location, you must change information in step 5 below to reflect the correct location.
 
   1. Open Windows "Settings".
 
@@ -58,8 +58,8 @@ The details for setting the `PATH` environment variable are different for differ
 
   4. Select the `Path` line, and click `Edit...`
 
-  5. Click the `New` button, and enter `C:\UsefulRubyScripts` in the resulting field.
+  5. Click the `New` button, and enter `C:\datafarmingrubyscripts` in the resulting field.
 
   6. Click `OK` to accept the input, click `OK` to close the panel, and close everything.
 
-If all went well, you should be able to open a `CMD.EXE` window, type `PATH` followed by a return, and see `C:\UsefulRubyScripts` as an element of the `PATH` string.
+If all went well, you should be able to open a `CMD.EXE` window, type `PATH` followed by a return, and see `C:\datafarmingrubyscripts` as an element of the `PATH` string.
