@@ -12,22 +12,22 @@ rescue LoadError
 end
 
 help_msg = [
-  'Generate scaled Latin hypercube designs with rotation and stacking. ',
-  'Results are white-space delimited data written to ' +
-    'stdout'.light_blue + ', and can be', 'redirected as desired.', '',
+  'Generate scaled Latin hypercube designs with shifting and stacking. ',
+  'Results are a white-space delimited NOLH design written to ' +
+    'stdout'.light_blue + '.', '',
   'Syntax:',
   "\n\truby #{$PROGRAM_NAME.split(%r{/|\\})[-1]} [--help]".yellow +
-    " [--rotations #] [--size #] [file_name]\n".yellow,
+    " [--stack #] [--levels #] [file_name]\n".yellow,
   "Arguments in square brackets are optional.  A vertical bar '|'",
   'indicates valid alternatives for invoking the option.', '',
   '  --help | -h | -? | ?'.green,
   "\tProduce this help message.  Supersedes any other choices.",
-  '  --rotations # | -r #'.green,
-  "\t# specifies the number of rotations. A value of 1 means print the",
-  "\tbase design.  If this option is not specified the number of rotations",
+  '  --stack # | -s #'.green,
+  "\t# specifies the number of stackings. A value of 1 means print the",
+  "\tbase design.  If this option is not specified the number of stackings",
   "\tdefaults to the number of columns in the design.  The specified value",
   "\tcannot exceed the number of columns in the design being used.",
-  '  --size # | -s #'.green,
+  '  --levels # | -l #'.green,
   "\t# specifies the desired number of levels in the NOLH (17, 33, 65, 129,",
   "\tor 257).  Defaults to the smallest design which can accommodate the",
   "\tnumber of factors if this option is not specified.",
@@ -69,13 +69,13 @@ excel_style_inputs = false
 while ARGV[0] && (ARGV[0][0] == '-' || ARGV[0][0] == 45 || ARGV[0][0] == '?')
   current_value = ARGV.shift
   case current_value
-  when '--rotations', '-r'
-    num_rotations = ARGV.shift.to_i
-  when '--size', '-s'
-    lh_size = ARGV.shift.to_i
-    unless NOLH::DESIGN_TABLE.keys.include?(lh_size)
+  when '--stack', '-s'
+    num_stackings = ARGV.shift.to_i
+  when '--levels', '-l'
+    lh_levels = ARGV.shift.to_i
+    unless NOLH::DESIGN_TABLE.keys.include?(lh_levels)
       ErrorHandling.clean_abort [
-        "Invalid Latin hypercube size: #{lh_size}".red,
+        "Invalid number of levels for Latin hypercube: #{lh_levels}".red,
         'Use 17, 33, 65, 129, or 257.'.yellow
       ]
     end
@@ -142,34 +142,34 @@ minimal_size = case min_values.size
                  ErrorHandling.clean_abort help_msg
                end
 
-lh_size ||= minimal_size
+lh_levels ||= minimal_size
 
-if lh_size < minimal_size
+if lh_levels < minimal_size
   ErrorHandling.clean_abort [
-    "Latin hypercube size of #{lh_size} is too small for #{n} factors.".red
+    "Latin hypercube with #{lh_levels} levels is too small for #{n} factors.".red
   ]
 end
 
 factor = Array.new(n) do |i|
-  Scaler.new(min_values[i], max_values[i], decimals[i], lh_size)
+  Scaler.new(min_values[i], max_values[i], decimals[i], lh_levels)
 end
 
-design = NOLH::DESIGN_TABLE[lh_size]
+design = NOLH::DESIGN_TABLE[lh_levels]
 
 num_columns = design[0].length
-num_rotations ||= num_columns
-if num_rotations > num_columns
+num_stackings ||= num_columns
+if num_stackings > num_columns
   ErrorHandling.clean_abort [
-    'Requested rotation exceeds number of columns in latin hypercube '.red +
+    'Requested stacking exceeds number of columns in latin hypercube '.red +
     "(#{num_columns})".red
   ]
 end
 
-mid_range = lh_size / 2
-num_rotations.times do |rotation_num|
+mid_range = lh_levels / 2
+num_stackings.times do |stack_num|
   design.each_with_index do |dp, i|
     scaled_dp = dp.slice(0, n).map.with_index { |x, k| factor[k].scale(x) }
-    puts scaled_dp.join "\t" unless rotation_num > 0 && i == mid_range
+    puts scaled_dp.join "\t" unless stack_num > 0 && i == mid_range
     design[i] = dp.rotate
   end
 end
